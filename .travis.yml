@@ -1,0 +1,15 @@
+language: cpp
+compiler:
+  - clang
+notifications:
+  email: 
+      - code@donner.at
+before_install:
+  - mkdir -p ~/julia
+  - curl -s -L https://status.julialang.org/stable/linux-x86_64 | tar -C ~/julia -x -z --strip-components=1 -f -
+  - export PATH="$PATH:$HOME/julia/bin" 
+script:
+  - julia -e 'Pkg.init(); Pkg.add("FactCheck")'
+  - julia -e 'run(`ln -s $(pwd()) $(Pkg.dir("SystemImageBuilder"))`); Pkg.pin("SystemImageBuilder")'
+  - julia -e 'Pkg.resolve()'
+  - julia ~/.julia/v0.3/SystemImageBuilder/test/runtests.jl
